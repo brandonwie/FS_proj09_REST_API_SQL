@@ -35,3 +35,9 @@ npm start
 ```
 
 To test the Express server, browse to the URL [http://localhost:5000/](http://localhost:5000/).
+
+## Version Note
+
+- 0.1.0
+  - setup routers (/routes)
+  - connect DB and app (checked using Postman)
