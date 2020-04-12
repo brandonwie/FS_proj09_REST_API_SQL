@@ -38,6 +38,13 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
 ## Version Note
 
+- 0.2.0
+
+  - Finish setting up `routes/user.js`
+  - Build authenticator(./security/auth.js), user form validator (./security/validator.js)
+  - User get/post routes works as expected
+
 - 0.1.0
+
   - setup routers (/routes)
   - connect DB and app (checked using Postman)

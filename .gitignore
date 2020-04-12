@@ -62,3 +62,6 @@ typings/
 
 # SQLite database file
 *.db
+
+# Personal file
+test.js
