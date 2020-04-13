@@ -23,6 +23,11 @@ const authenticator = async (req, res, next) => {
       ],
     });
     // if there's a matching user,
+    console.log(
+      "dbUser: ",
+      typeof dbUser,
+      dbUser
+    );
     if (dbUser) {
       const dbUserObj = dbUser.dataValues;
       const dbUserPassword = dbUserObj.password;
@@ -34,12 +39,12 @@ const authenticator = async (req, res, next) => {
       // if the password matches,
       if (passwordSync) {
         // create empty req.user to pass
-        req.user = {};
+        req.currentUser = {};
         // to remove password from being exposed
         Object.entries(dbUserObj).forEach(
           ([key, value]) => {
             if (key !== "password") {
-              req.user[key] = value;
+              req.currentUser[key] = value;
             }
           }
         );
@@ -54,7 +59,6 @@ const authenticator = async (req, res, next) => {
         message: "The username doesn't exist",
       });
     }
-    console.log(dbUser.dataValues);
   } else if (
     !credentials.name &&
     credentials.pass

@@ -26,7 +26,7 @@ function asyncHandler(cb) {
   };
 }
 
-// TODO
+//* GET: User who is authenticated
 router.get(
   "/",
   authenticator,
