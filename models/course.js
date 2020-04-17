@@ -31,15 +31,13 @@ module.exports = (sequelize) => {
     },
     {
       sequelize,
-      associate: {},
     }
   );
-
   Course.associate = (models) => {
     Course.belongsTo(models.User, {
       foreignKey: "userId",
+      allowNull: false,
     });
   };
-
   return Course;
 };

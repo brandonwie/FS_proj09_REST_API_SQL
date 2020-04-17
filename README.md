@@ -38,6 +38,11 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
 ## Version Note
 
+- 0.3.0
+
+  - TODO: fix authenticator to apply to 4 different routes
+  - Setup Course routes and functions
+
 - 0.2.0
 
   - Finish setting up `./routes/user.js`

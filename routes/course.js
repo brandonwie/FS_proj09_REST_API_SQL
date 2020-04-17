@@ -45,10 +45,6 @@ router.get(
 router.get(
   "/:id",
   asyncHandler(async (req, res) => {
-    console.log(
-      typeof req.params.id,
-      req.params.id
-    );
     const course = await Course.findOne({
       where: {
         id: req.params.id,
@@ -70,7 +66,57 @@ router.get(
 );
 
 /**
- * @param {} - POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
+ * @param {} - POST /api/courses 201 - Create a course, set the "Location" header to the URI for the course, and returns no content
  */
+router.post(
+  "/",
+  asyncHandler(async (req, res) => {
+    const userData = req.body;
+    await Course.create(userData);
+    // address "Location" header to the course just created (using "title" attribute)
+    const course = await Course.findOne({
+      where: {
+        title: req.body.title,
+      },
+    });
+    const id = course.id;
+    res
+      .status(201)
+      .set("Location", `/${id}`)
+      .end();
+  })
+);
+
+/**
+ * @param {} - PUT /api/courses 201 - Update a course and returns no content
+ */
+
+router.put(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const data = req.body;
+    const course = await Course.findByPk(
+      req.params.id
+    );
+    course.update({
+      title: data.title,
+      description: data.description,
+      estimatedTime: data.estimatedTime,
+      materialNeeded: data.materialNeeded,
+    });
+    res.status(204).end();
+  })
+);
+
+router.delete(
+  "/:id",
+  asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(
+      req.params.id
+    );
+    course.destroy();
+    res.status(204).end();
+  })
+);
 
 module.exports = router;

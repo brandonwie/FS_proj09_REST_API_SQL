@@ -35,16 +35,32 @@ router.get(
   })
 );
 
+// router.get(
+//   "/",
+//   asyncHandler(async (req, res) => {
+//     const user = await User.findAll({
+//       attributes: {
+//         exclude: ["createdAt", "updatedAt"],
+//       },
+//       include: [
+//         {
+//           model: Course,
+//           attributes: ["title"],
+//         },
+//       ],
+//     });
+//     res.status(200).json(user);
+//   })
+// );
+
 // POST: new user
 router.post(
   "/",
   validator,
   asyncHandler(async (req, res) => {
-    //* newUser to assign in User.create()
-    const newUser = {};
     //* Catch validation results
     const errors = validationResult(req);
-    //! errors returns an object named 'Result', has two key-value pairs; 'formatter' & 'errors'
+    //! errors returns an object: 'Result' has two key-value pairs; 'formatter' & 'errors'
     if (!errors.isEmpty()) {
       //! error.array() method filters and returns an array of 'errors'
       const errorMessages = errors
@@ -54,33 +70,30 @@ router.post(
         .status(400)
         .json({ errors: errorMessages });
     } else {
-      //* user => an object with key-value pair
       const user = req.body;
       //! EXCEED EXPECTATION : find the email address already exist
-      const findEmail = await User.findOne({
-        where: {
-          emailAddress: `${req.body.emailAddress}`,
-        },
-      });
-      if (findEmail) {
+      const findMatchingEmail = await User.findOne(
+        {
+          where: {
+            emailAddress: `${req.body.emailAddress}`,
+          },
+        }
+      );
+      if (findMatchingEmail) {
         res.status(400).json({
-          errors: "The email already exist",
+          errors:
+            "The email is taken. Try another.",
         });
       } else {
-        //! Object.entries(obj) outputs an array that has arrays of key-value pairs
-        Object.entries(user).forEach(
-          ([key, value]) => {
-            if (key === "password") {
-              //! obj[string] format
-              newUser[key] = bcrypt.hashSync(
-                value
-              );
-            } else {
-              newUser[key] = value;
-            }
+        for (const key in user) {
+          // hash password
+          if (key === "password") {
+            user[key] = bcrypt.hashSync(
+              user[key]
+            );
           }
-        );
-        await User.create(newUser);
+        }
+        await User.create(user);
         res
           .status(201)
           .set("Location", "/")
@@ -104,7 +117,7 @@ router.delete(
     } else {
       res
         .status(400)
-        .json({ msg: "user not found" });
+        .json({ msg: "User not found" });
     }
   })
 );

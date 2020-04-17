@@ -1,6 +1,6 @@
 const auth = require("basic-auth");
 const bcrypt = require("bcryptjs");
-const { User } = require("../models");
+const { User, Course } = require("../models");
 
 // authenticate user function
 const authenticator = async (req, res, next) => {
@@ -15,48 +15,53 @@ const authenticator = async (req, res, next) => {
         emailAddress: credentials.name,
       },
       attributes: [
-        "id",
         "firstName",
         "lastName",
         "emailAddress",
         "password",
       ],
+      include: [
+        {
+          model: Course,
+          attributes: ["title"],
+        },
+      ],
     });
-    // if there's a matching user,
-    console.log(
-      "dbUser: ",
-      typeof dbUser,
-      dbUser
-    );
+    //! if a user is found,
     if (dbUser) {
       const dbUserObj = dbUser.dataValues;
+      console.log(dbUserObj);
       const dbUserPassword = dbUserObj.password;
-      // sync the passwords
+      //! check passwords match.
       const passwordSync = bcrypt.compareSync(
         credentials.pass,
         dbUserPassword
       );
-      // if the password matches,
+      //! if password match,
       if (passwordSync) {
         // create empty req.user to pass
-        req.currentUser = {};
-        // to remove password from being exposed
+        req.user = {};
+        //! remove password from being exposed & pass it via req.user
         Object.entries(dbUserObj).forEach(
           ([key, value]) => {
             if (key !== "password") {
-              req.currentUser[key] = value;
+              req.user[key] = value;
             }
           }
         );
         next();
       } else {
+        //! PASSWORD INCORRECT
         res.status(400).json({
-          message: "The password doesn't match",
+          message:
+            "The email or password you entered is incorrect.",
         });
       }
     } else {
+      //! USERNAME INCORRECT
       res.status(400).json({
-        message: "The username doesn't exist",
+        message:
+          "The email or password you entered is incorrect.",
       });
     }
   } else if (
@@ -80,4 +85,5 @@ const authenticator = async (req, res, next) => {
     });
   }
 };
+
 module.exports = { authenticator };
