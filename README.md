@@ -44,7 +44,7 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
 - 0.4.0
 
-  - The `POST` route in `routes/course.js` authenticates users => take the user's ID(the data passed from `security/auth.js`) as "userId"
+  - The `POST` route in `routes/course.js` authenticates users => take the user's ID(the data passed from `scripts/auth.js`) as "userId"
 
 - 0.3.0
 
@@ -54,7 +54,7 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 - 0.2.0
 
   - Finish setting up `./routes/user.js`
-  - Build authenticator(`./security/auth.js`), user form validator (`./security/validator.js`)
+  - Build authenticator(`./scripts/auth.js`), user form validator (`./scripts/validator.js`)
   - User get/post routes works as expected
 
 - 0.1.0
