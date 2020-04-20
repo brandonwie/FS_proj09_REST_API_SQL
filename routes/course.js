@@ -1,17 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const { User, Course } = require("../models");
-
-/* Handler function to wrap each route. */
-function asyncHandler(cb) {
-  return async (req, res, next) => {
-    try {
-      await cb(req, res, next);
-    } catch (error) {
-      res.status(500).send(error);
-    }
-  };
-}
+const {
+  authenticator,
+} = require("../scripts/auth");
+const asyncHandler = require("../scripts/asynchandler");
 
 /**
  * @param {} - GET /api/courses 200 - Returns a list of courses (including the user that owns each course)
@@ -70,10 +63,14 @@ router.get(
  */
 router.post(
   "/",
+  authenticator,
   asyncHandler(async (req, res) => {
-    const userData = req.body;
-    await Course.create(userData);
-    // address "Location" header to the course just created (using "title" attribute)
+    //* New Course request data
+    const courseData = req.body;
+    //* Add 'userId' from req.user(data passed through 'auth.js')
+    courseData.userId = req.user.id;
+    await Course.create(courseData);
+    //! address "Location" header to the course just created (using "title" attribute)
     const course = await Course.findOne({
       where: {
         title: req.body.title,
@@ -93,29 +90,70 @@ router.post(
 
 router.put(
   "/:id",
+  authenticator,
   asyncHandler(async (req, res) => {
-    const data = req.body;
-    const course = await Course.findByPk(
-      req.params.id
+    const courseId = parseInt(req.params.id, 10);
+    const courseData = req.body;
+    const userData = req.user;
+    const coursesUserOwns = userData.Courses.map(
+      (item) => item.id
     );
-    course.update({
-      title: data.title,
-      description: data.description,
-      estimatedTime: data.estimatedTime,
-      materialNeeded: data.materialNeeded,
-    });
-    res.status(204).end();
+    const course = await Course.findByPk(
+      courseId
+    );
+    if (course) {
+      //! Exceed Expectation: check if the course is owned by the current authenticated user
+      if (coursesUserOwns.indexOf(courseId) > 0) {
+        course.update({
+          title: courseData.title,
+          description: courseData.description,
+          estimatedTime: courseData.estimatedTime,
+          materialNeeded:
+            courseData.materialNeeded,
+        });
+        res.status(204).end();
+      } else {
+        res.status(403).json({
+          message:
+            "You don't have permission to proceed the request.",
+        });
+      }
+    } else {
+      res
+        .status(404)
+        .json({ message: "No Course Found" });
+    }
   })
 );
 
 router.delete(
   "/:id",
+  authenticator,
   asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(
-      req.params.id
+    const courseId = parseInt(req.params.id, 10);
+    const userData = req.user;
+    const coursesUserOwns = userData.Courses.map(
+      (item) => item.id
     );
-    course.destroy();
-    res.status(204).end();
+    const course = await Course.findByPk(
+      courseId
+    );
+    if (course) {
+      //! Exceed Expectation: check if the course is owned by the current authenticated user
+      if (coursesUserOwns.indexOf(courseId) > 0) {
+        course.destroy();
+        res.status(204).end();
+      } else {
+        res.status(403).json({
+          message:
+            "You don't have permission to proceed the request.",
+        });
+      }
+    } else {
+      res
+        .status(404)
+        .json({ message: "No Course Found" });
+    }
   })
 );
 

@@ -38,6 +38,14 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
 ## Version Note
 
+- 0.5.0
+
+  - Finish Exceed Expectation features
+
+- 0.4.0
+
+  - The `POST` route in `routes/course.js` authenticates users => take the user's ID(the data passed from `security/auth.js`) as "userId"
+
 - 0.3.0
 
   - TODO: fix authenticator to apply to 4 different routes

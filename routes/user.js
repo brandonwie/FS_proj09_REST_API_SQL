@@ -7,24 +7,11 @@ const {
 const { User } = require("../models");
 const {
   authenticator,
-} = require("../security/auth");
+} = require("../scripts/auth");
 const {
-  validator,
-} = require("../security/validator");
-
-/* Handler function to wrap each route. */
-function asyncHandler(cb) {
-  return async (req, res, next) => {
-    try {
-      await cb(req, res, next);
-    } catch (error) {
-      console.log(
-        "An error has caught in asyncHandler function"
-      );
-      res.status(500).json(error);
-    }
-  };
-}
+  userValidator,
+} = require("../scripts/validator");
+const asyncHandler = require("../scripts/asynchandler");
 
 //* GET: User who is authenticated
 router.get(
@@ -35,28 +22,10 @@ router.get(
   })
 );
 
-// router.get(
-//   "/",
-//   asyncHandler(async (req, res) => {
-//     const user = await User.findAll({
-//       attributes: {
-//         exclude: ["createdAt", "updatedAt"],
-//       },
-//       include: [
-//         {
-//           model: Course,
-//           attributes: ["title"],
-//         },
-//       ],
-//     });
-//     res.status(200).json(user);
-//   })
-// );
-
 // POST: new user
 router.post(
   "/",
-  validator,
+  userValidator,
   asyncHandler(async (req, res) => {
     //* Catch validation results
     const errors = validationResult(req);
@@ -71,7 +40,7 @@ router.post(
         .json({ errors: errorMessages });
     } else {
       const user = req.body;
-      //! EXCEED EXPECTATION : find the email address already exist
+      //! EXCEED EXPECTATION 1-2 : find the email address already exist
       const findMatchingEmail = await User.findOne(
         {
           where: {
@@ -103,21 +72,31 @@ router.post(
   })
 );
 
+//? BUILT IT FOR TEST (WILL DELETE)
 router.delete(
   "/:id",
+  authenticator,
   asyncHandler(async (req, res) => {
-    const user = await User.findByPk(
-      req.params.id
-    );
-    if (user) {
-      await user.destroy();
-      res
-        .status(204)
-        .json({ msg: "Delete Successful!" });
+    console.log(req.user);
+    if (req.user.id === req.params.id) {
+      const user = await User.findByPk(
+        req.params.id
+      );
+      if (user) {
+        await user.destroy();
+        res.status(204).json({
+          message: "Delete Successful!",
+        });
+      } else {
+        res
+          .status(400)
+          .json({ Error: "User not found" });
+      }
     } else {
+      // send error "unauthorized"
       res
-        .status(400)
-        .json({ msg: "User not found" });
+        .status(401)
+        .json({ Error: "Unauthorized" });
     }
   })
 );
