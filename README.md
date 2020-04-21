@@ -59,9 +59,9 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
     2. Ensure that a user can only edit and delete their own courses.
 
-    - `routes/course.js` `line 106, 143`
+    - `routes/course.js` `line 111, 161`
 
-    3. Update the Sequelize model queries for the Courses endpoint GET routes to filter out the following properties.
+    3. Update the Sequelize model queries for the Courses endpoint GET routes to filter out properties.
 
     - `routes/course.js` `line 46`
     - `scripts/auth.js` `line 20`
