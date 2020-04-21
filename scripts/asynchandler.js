@@ -3,6 +3,7 @@ const asyncHandler = (callback) => {
     try {
       await callback(req, res, next);
     } catch (err) {
+      //! Use the Express next() function in each route handler to pass any Sequelize validation errors to the global error handler.
       if (
         err.name === "SequelizeValidationError"
       ) {
