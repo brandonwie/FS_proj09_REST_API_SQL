@@ -9,7 +9,7 @@ const {
   authenticator,
 } = require("../scripts/auth");
 const {
-  userValidator,
+  validEmail,
 } = require("../scripts/validator");
 const asyncHandler = require("../scripts/asynchandler");
 
@@ -22,10 +22,10 @@ router.get(
   })
 );
 
-// POST: new user
+//* POST: Create a new user
 router.post(
   "/",
-  userValidator,
+  validEmail,
   asyncHandler(async (req, res) => {
     //* Catch validation results
     const errors = validationResult(req);
@@ -37,37 +37,17 @@ router.post(
         .map((err) => err.msg);
       res
         .status(400)
-        .json({ errors: errorMessages });
+        .json({ message: errorMessages });
     } else {
       const user = req.body;
-      //! EXCEED EXPECTATION 1-2 : find the email address already exist
-      const findMatchingEmail = await User.findOne(
-        {
-          where: {
-            emailAddress: `${req.body.emailAddress}`,
-          },
+      for (const key in user) {
+        //* hash password
+        if (key === "password") {
+          user[key] = bcrypt.hashSync(user[key]);
         }
-      );
-      if (findMatchingEmail) {
-        res.status(400).json({
-          errors:
-            "The email is taken. Try another.",
-        });
-      } else {
-        for (const key in user) {
-          // hash password
-          if (key === "password") {
-            user[key] = bcrypt.hashSync(
-              user[key]
-            );
-          }
-        }
-        await User.create(user);
-        res
-          .status(201)
-          .set("Location", "/")
-          .end();
       }
+      await User.create(user);
+      res.status(201).set("Location", "/").end();
     }
   })
 );
@@ -77,27 +57,11 @@ router.delete(
   "/:id",
   authenticator,
   asyncHandler(async (req, res) => {
-    console.log(req.user);
-    if (req.user.id === req.params.id) {
-      const user = await User.findByPk(
-        req.params.id
-      );
-      if (user) {
-        await user.destroy();
-        res.status(204).json({
-          message: "Delete Successful!",
-        });
-      } else {
-        res
-          .status(400)
-          .json({ Error: "User not found" });
-      }
-    } else {
-      // send error "unauthorized"
-      res
-        .status(401)
-        .json({ Error: "Unauthorized" });
-    }
+    const user = await User.findByPk(
+      req.params.id
+    );
+    await user.destroy();
+    res.status(204).end();
   })
 );
 

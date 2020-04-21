@@ -1,6 +1,9 @@
 "use strict";
 
-const Sequelize = require("sequelize");
+const {
+  Sequelize,
+  DataTypes,
+} = require("sequelize");
 
 module.exports = (sequelize) => {
   class User extends Sequelize.Model {}
@@ -42,6 +45,8 @@ module.exports = (sequelize) => {
       emailAddress: {
         type: Sequelize.STRING,
         allowNull: false,
+        //! EXCEED EXPECTATION 1-2 : find the email address already exist
+        unique: true,
         validate: {
           notNull: {
             msg:

@@ -6,14 +6,18 @@ const asyncHandler = (callback) => {
       if (
         err.name === "SequelizeValidationError"
       ) {
-        const errorMessages = err.errors.map(
-          (err) => err.message
-        );
-        res.status(400).json({
-          errors: errorMessages,
+        next(err);
+      } else if (
+        err.name ===
+        "SequelizeUniqueConstraintError"
+      ) {
+        err.errors.map((err) => {
+          err.message =
+            "The email is already taken. Try another.";
         });
+        next(err);
       } else {
-        res.status(500).json(err);
+        res.status(500).json("Unknown Error");
       }
     }
   };

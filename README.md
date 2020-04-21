@@ -36,6 +36,14 @@ npm start
 
 To test the Express server, browse to the URL [http://localhost:5000/](http://localhost:5000/).
 
+## For Your Testing
+
+- No need to put `userId` on POST: Course (will be automatically added)
+- User:
+  - John Doe - password: johndoe
+  - Mary Jane - password: maryjane
+  - Brandon Wie - password: brandonwie
+
 ## Version Note
 
 - 1.0.0
@@ -45,8 +53,9 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
     1. Add additional user email address validations to the POST /api/users route.
 
-    - `scripts/validator.js` `line 15`
-    - `routes/user.js` `line 44`
+    - `scripts/validator.js` `line 5`
+    - `models/user.js` `line 49`
+    - `scripts/asynchandler.js` `line 11`
 
     2. Ensure that a user can only edit and delete their own courses.
 

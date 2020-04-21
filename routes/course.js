@@ -80,7 +80,11 @@ router.post(
     const id = course.id;
     res
       .status(201)
-      .set("Location", `/${id}`)
+      .set({
+        Location: `https://localhost:${
+          process.env.PORT || 5000
+        }/api/courses/${id}`,
+      })
       .end();
   })
 );
@@ -104,25 +108,37 @@ router.put(
     );
     if (course) {
       //! Exceed Expectation 2: check if the course is owned by the current authenticated user
-      if (coursesUserOwns.indexOf(courseId) > 0) {
-        course.update({
-          title: courseData.title,
-          description: courseData.description,
-          estimatedTime: courseData.estimatedTime,
-          materialsNeeded:
-            courseData.materialsNeeded,
-        });
-        res.status(204).end();
+      if (
+        coursesUserOwns.indexOf(courseId) >= 0
+      ) {
+        if (
+          courseData.hasOwnProperty("title") &&
+          courseData.hasOwnProperty("description")
+        ) {
+          await course.update({
+            title: courseData.title,
+            description: courseData.description,
+            estimatedTime:
+              courseData.estimatedTime,
+            materialsNeeded:
+              courseData.materialsNeeded,
+          });
+          res.status(204).end();
+        } else {
+          res.status(400).json({
+            message:
+              "'title' and 'description' must be included.",
+          });
+        }
       } else {
         res.status(403).json({
-          message:
-            "You don't have permission to proceed the request.",
+          message: "Unauthorized.",
         });
       }
     } else {
       res
         .status(404)
-        .json({ message: "No Course Found" });
+        .json({ message: "No Course Found." });
     }
   })
 );
@@ -131,6 +147,7 @@ router.delete(
   "/:id",
   authenticator,
   asyncHandler(async (req, res) => {
+    //! courseId has to be integer to use as a parameter of "indexOf"
     const courseId = parseInt(req.params.id, 10);
     const userData = req.user;
     const coursesUserOwns = userData.Courses.map(
@@ -141,7 +158,9 @@ router.delete(
     );
     if (course) {
       //! Exceed Expectation 2: check if the course is owned by the current authenticated user
-      if (coursesUserOwns.indexOf(courseId) > 0) {
+      if (
+        coursesUserOwns.indexOf(courseId) >= 0
+      ) {
         course.destroy();
         res.status(204).end();
       } else {
@@ -153,7 +172,7 @@ router.delete(
     } else {
       res
         .status(404)
-        .json({ message: "No Course Found" });
+        .json({ message: "No Course Found." });
     }
   })
 );

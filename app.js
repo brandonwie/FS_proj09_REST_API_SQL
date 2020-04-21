@@ -7,7 +7,7 @@ const { sequelize } = require("./models");
 const usersRoute = require("./routes/user");
 const coursesRoute = require("./routes/course");
 
-//* Sequelize Authenticate
+//! Sequelize Authenticate
 sequelize
   .authenticate()
   .then(() => {
@@ -41,6 +41,7 @@ app.use(morgan("dev"));
 // TODO setup your api routes here
 app.use("/api/users", usersRoute);
 app.use("/api/courses", coursesRoute);
+
 // setup a friendly greeting for the root route
 app.get("/", (req, res) => {
   res.json({
@@ -64,10 +65,12 @@ app.use((err, req, res, next) => {
       )}`
     );
   }
-
+  const errorMessages = err.errors.map(
+    (err) => err.message
+  );
   res.status(err.status || 500).json({
-    message: err.message,
-    error: {},
+    message: errorMessages,
+    error: err,
   });
 });
 

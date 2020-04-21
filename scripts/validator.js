@@ -1,16 +1,6 @@
 const { check } = require("express-validator");
 
-const userValidator = [
-  check("firstName")
-    .matches(/^[A-Z][a-zA-Z]+$/)
-    .withMessage(
-      "First name must contain letters only."
-    ),
-  check("lastName")
-    .matches(/^[A-Z][a-zA-Z]+$/)
-    .withMessage(
-      "Last name must contain letters only."
-    ),
+const validEmail = [
   //! EXCEED EXPECTATION 1-1 : check if the email address given is valid
   check("emailAddress")
     .isEmail()
@@ -19,6 +9,4 @@ const userValidator = [
     ),
 ];
 
-module.exports = {
-  userValidator,
-};
+module.exports = { validEmail };
