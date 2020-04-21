@@ -36,9 +36,9 @@ npm start
 
 To test the Express server, browse to the URL [http://localhost:5000/](http://localhost:5000/).
 
-## For Your Testing
+## For Your Testing (Postman)
 
-- No need to put `userId` on POST: Course (will be automatically added)
+- No need to put `userId` on Course POST/PUT routes (will be automatically added with a user ID authenticated)
 - User:
   - John Doe - password: johndoe
   - Mary Jane - password: maryjane

@@ -4,7 +4,6 @@ const { User, Course } = require("../models");
 
 // authenticate user function
 const authenticator = async (req, res, next) => {
-  //* credentials returns an object named Credentials with two key-value pairs name: username, pass: password
   try {
     const credentials = auth(req);
     const name = credentials.name;
