@@ -64,4 +64,4 @@ typings/
 *.db
 
 # Personal file
-test.js
+data.js

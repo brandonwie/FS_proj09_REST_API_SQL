@@ -16,13 +16,10 @@ const authenticator = async (req, res, next) => {
       where: {
         emailAddress: name,
       },
-      attributes: [
-        "id",
-        "firstName",
-        "lastName",
-        "emailAddress",
-        "password",
-      ],
+      //! Exceed Expectations 3: filter out 'createdAt' and 'updatedAt'
+      attributes: {
+        exclude: ["createdAt", "updateAt"],
+      },
       include: [
         {
           model: Course,
@@ -49,7 +46,7 @@ const authenticator = async (req, res, next) => {
       if (passwordSync) {
         //! set the user on the request
         req.user = {};
-        //! remove password from being exposed & pass it via req.user
+        //! Exceed Expectation 3: remove password from being exposed & pass it via req.user
         Object.entries(dbUserObj).forEach(
           ([key, value]) => {
             if (key !== "password") {

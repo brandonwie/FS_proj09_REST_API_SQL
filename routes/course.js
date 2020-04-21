@@ -42,6 +42,7 @@ router.get(
       where: {
         id: req.params.id,
       },
+      //! Exceed Expectations 3: filter out 'createdAt' and 'updatedAt'
       attributes: {
         exclude: ["createdAt", "updatedAt"],
       },
@@ -102,14 +103,14 @@ router.put(
       courseId
     );
     if (course) {
-      //! Exceed Expectation: check if the course is owned by the current authenticated user
+      //! Exceed Expectation 2: check if the course is owned by the current authenticated user
       if (coursesUserOwns.indexOf(courseId) > 0) {
         course.update({
           title: courseData.title,
           description: courseData.description,
           estimatedTime: courseData.estimatedTime,
-          materialNeeded:
-            courseData.materialNeeded,
+          materialsNeeded:
+            courseData.materialsNeeded,
         });
         res.status(204).end();
       } else {
@@ -139,7 +140,7 @@ router.delete(
       courseId
     );
     if (course) {
-      //! Exceed Expectation: check if the course is owned by the current authenticated user
+      //! Exceed Expectation 2: check if the course is owned by the current authenticated user
       if (coursesUserOwns.indexOf(courseId) > 0) {
         course.destroy();
         res.status(204).end();

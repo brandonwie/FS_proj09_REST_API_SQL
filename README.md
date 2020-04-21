@@ -38,6 +38,25 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
 ## Version Note
 
+- 1.0.0
+
+  - Ready to submit
+  - Exceed Expectations Features
+
+    1. Add additional user email address validations to the POST /api/users route.
+
+    - `scripts/validator.js` `line 15`
+    - `routes/user.js` `line 44`
+
+    2. Ensure that a user can only edit and delete their own courses.
+
+    - `routes/course.js` `line 106, 143`
+
+    3. Update the Sequelize model queries for the Courses endpoint GET routes to filter out the following properties.
+
+    - `routes/course.js` `line 46`
+    - `scripts/auth.js` `line 20`
+
 - 0.5.0
 
   - Finish Exceed Expectation features
