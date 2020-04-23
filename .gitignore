@@ -64,4 +64,5 @@ typings/
 *.db
 
 # Personal file
-data.js
+personal/data.js
+personal/validator.js

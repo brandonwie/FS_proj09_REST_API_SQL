@@ -8,9 +8,6 @@ const { User } = require("../models");
 const {
   authenticator,
 } = require("../scripts/auth");
-const {
-  validEmail,
-} = require("../scripts/validator");
 const asyncHandler = require("../scripts/asynchandler");
 
 //* GET: User who is authenticated
@@ -25,7 +22,6 @@ router.get(
 //* POST: Create a new user
 router.post(
   "/",
-  validEmail,
   asyncHandler(async (req, res) => {
     //* Catch validation results
     const errors = validationResult(req);
