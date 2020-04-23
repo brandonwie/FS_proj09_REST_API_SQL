@@ -46,22 +46,26 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
 ## Version Note
 
+- 1.0.1
+
+  - `POST` _User route_ now sends back messages for all errors (Create User: Incomplete data)
+
 - 1.0.0
 
   - Ready to submit
-  - Exceed Expectations Features
+  - _Exceed Expectations Features_
 
-    1. Add additional user email address validations to the POST /api/users route.
+    1. _Add additional user email address validations to the POST /api/users route._
 
     - `scripts/validator.js` `line 5`
     - `models/user.js` `line 49`
     - `scripts/asynchandler.js` `line 11`
 
-    2. Ensure that a user can only edit and delete their own courses.
+    1. Ensure that a user can only edit and delete their own courses.
 
     - `routes/course.js` `line 111, 161`
 
-    3. Update the Sequelize model queries for the Courses endpoint GET routes to filter out properties.
+    1. Update the Sequelize model queries for the Courses endpoint GET routes to filter out properties.
 
     - `routes/course.js` `line 46`
     - `scripts/auth.js` `line 20`
