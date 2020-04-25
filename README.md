@@ -46,6 +46,10 @@ To test the Express server, browse to the URL [http://localhost:5000/](http://lo
 
 ## Version Note
 
+- 1.0.2
+
+  - Fixed returning 500 status code error in case of `SequelizeValidationError` and `SequelizeUniqueConstraintError` to 400 status code
+
 - 1.0.1
 
   - `POST` _User route_ now sends back messages for all errors (Create User: Incomplete data)

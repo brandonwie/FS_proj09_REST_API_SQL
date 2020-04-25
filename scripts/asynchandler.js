@@ -7,6 +7,7 @@ const asyncHandler = (callback) => {
       if (
         err.name === "SequelizeValidationError"
       ) {
+        err.status = 400;
         next(err);
       } else if (
         err.name ===
@@ -16,6 +17,7 @@ const asyncHandler = (callback) => {
           err.message =
             "The email is already taken. Try another.";
         });
+        err.status = 400;
         next(err);
       } else {
         res.status(500).json("Unknown Error");
